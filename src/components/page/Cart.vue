@@ -23,7 +23,7 @@
         <div class="group">
           <div
             v-for="(item,nindex) in lists.goods"
-            class="card-goods__item van-checkbox"
+            class="card-goods__item van-checkbox"   
             :key="nindex"
           >
             <div class="card-goods__item van-checkbox__icon">
@@ -55,9 +55,9 @@
     </ul>
     <div class="fixBar ub-box ub-between ub-ver">
         <div class="ft-cb">
-            <p  @click="checkAll()">
-                <input id="cb-footer" type="checkbox" v-model="checkall" class="cb o-t-cb" >
-                <label for="cb-footer">全选</label>
+            <p @click="checkAll()">
+                <input class="cb o-t-cb" type="checkbox" v-model="checkall"  >
+                <label>全选</label>
             </p>
         </div>
         <div class="total ub-box">
@@ -198,23 +198,12 @@ export default {
       this.total=0;
       that.mylist.forEach(item1=>{
         item1.goods.forEach(item2=>{
-          console.log(item2,'010101')
           if(item2.check_one==true){
             that.total+=item2.num;
             that.allprice+=item2.price;
           }
         })
       })
-    },
-    checkAll:function(n){
-      var that = this;
-      that.mylist.forEach(item1 => {
-        item1.this_all=!that.checkall
-        item1.goods.forEach(item2 => {
-          item2.check_one=!that.checkall
-        })
-      });
-      that.money();
     },
     abc:function(){
       var that = this;
@@ -224,16 +213,30 @@ export default {
       aaa.length==that.mylist.length ? that.checkall = true : that.checkall = false
       that.money();
     },
+    checkAll:function(){
+      var that = this;
+      that.mylist.forEach(item1 => {
+        item1.this_all=!that.checkall
+        item1.goods.forEach(item2 => {
+          item2.check_one=!that.checkall
+        })
+      });
+      var AllGoods = that.mylist.filter(item1=>{
+          return item1.this_all === true;
+      })
+      console.log(AllGoods,'0000')
+      that.abc();
+    },
     checkList: function(i) {
       var that = this;
       that.mylist[i].goods.forEach(item1 => {
         item1.check_one = !that.mylist[i].this_all;
-        console.log(item1.check_one, "111");
       });
       that.mylist[i].this_all = !that.mylist[i].this_all;
       var checkAllList = that.mylist.filter(item1=>{
           return item1.this_all == true;
       })
+      console.log(checkAllList,'1111')
       that.abc();
       // that.money();
     },
@@ -257,7 +260,9 @@ export default {
 </script>
 <style scoped>
 .allItem{
-    padding-bottom:50px;
+  position: relative;
+  padding-bottom:50px;
+  z-index: 2;
 }
 .shopItem {
   margin-top: 10px;
@@ -281,25 +286,25 @@ export default {
 }
 .o-t-cb + label {
   display: inline-block;
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   cursor: pointer;
   background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoBAMAAAB+0KVeAAAAA3NCSVQICAjb4U/gAAAALVBMVEX///+hprehprehprehprehprehprehprehprehprehprehprehprehprehprd0XKVXAAAAD3RSTlMAESIzRGZ3iJmqu8zd7v8zDtSdAAAACXBIWXMAAAsSAAALEgHS3X78AAAAHHRFWHRTb2Z0d2FyZQBBZG9iZSBGaXJld29ya3MgQ1M26LyyjAAAAPVJREFUKJF1k88KQUEUxg/yrygLG4m8gLKVUlZ28gTyAsrCTskLKLL3BFKysJO1IixkYSMkrr5nMPeie+/0OYuZ6TedP3PONyKWecpjYNWKicO8PVh2zDjYSIHTWi0PmzaAeUkk3gYOP5YAhp9THhh8kyww+90XYHySJXG3w3cwtfYRqjb042FuAdyc1dVQV2sWTScMYm96G+KyhfL34uKGRWQkhL4bhtGVFHJu6MNOKlpIFfQqnbsOFZlcdVh5yuasw/RLsNVhFIKlDiP/IHOniWhJtHj6TNoQ2jraZDoOPjg6YioGLhsqMCpFLloub/oR9C/zBsU0n4PhpWahAAAAAElFTkSuQmCC)
     no-repeat;
-  background-size: 16px;
+  background-size: 20px;
 }
 .o-t-cb:checked + label {
   background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAMAAAC7IEhfAAAAA3NCSVQICAjb4U/gAAAAh1BMVEX/////UAD/UAD/UAD/UAD/UAD/UAD/UAD/UAD/UAD/UAD/UAD/////+vj/9fD/8ev/8On/7OP/6d//5Nj/4NL/3s//2cj/1MH/zLX/w6f/wKP/upv/t5b/rYf/qID/oXb/mWb/jlr/jFj/dTb/cC//biz/bSr/aCP/XhT/Wg7/Vgn/UQL/UADQOR1YAAAALXRSTlMAESJEd4iZqrvM3e7///////////////////////////////////////////9INcYgAAAACXBIWXMAAAsSAAALEgHS3X78AAAAHHRFWHRTb2Z0d2FyZQBBZG9iZSBGaXJld29ya3MgQ1M26LyyjAAAARJJREFUOI2N1et2wiAMAOBApVZg7j7dzbn71Lz/8w0qcsKtJr/EfgcIDSkADdGpQaMLPahOQCtkb5CE6WWdzbGIeYXOTOncrLOMicp0YdJkq2LRcogLwXOJbK4bVo95TDvEkJGs5kvDSM7CcXF53iH6KXsO7N3RnN2hDyOgaz/9evyIvztQTfe5tBeH00DB0HLfl9au42gAPeFW+zjUMOEeduSPBiwchdvbbdtReGNtkD+lQ5LMmw3y97p0mh7Pq5PvR3efOXc89MBH6d3dX56dSl/hi5NXNedeYVoUXtacK4qszJ6qzpdZVriHzXPFjYXLvgr8y8W+rvwGwG8p7CbFb3v8Rgr81gzsZj9ulX4+0kf/qVXH8bP2GwMAAAAASUVORK5CYII=)
     no-repeat;
-  background-size: 16px;
+  background-size: 20px;
 }
 .shopItem .ico .shopIco {
   background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDoxOUUwRjA0MTczMzAxMUU1OTIxNEVBNEM3N0VGQTM4QiIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDoxOUUwRjA0MjczMzAxMUU1OTIxNEVBNEM3N0VGQTM4QiI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjE5RTBGMDNGNzMzMDExRTU5MjE0RUE0Qzc3RUZBMzhCIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjE5RTBGMDQwNzMzMDExRTU5MjE0RUE0Qzc3RUZBMzhCIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+PGrJXgAAATJQTFRF////X2Ru9fX2/v7+YGVve3+If4OLZ2x1/P39/f394uPl9/f4bHF6YWZwu73B+/v7zc/SkZSb9PT16Onr1dbZmJuio6ar9PX1vL/DeHyFam94+/v89/j41tfZY2hxZWp06errkpWc+fn58vP0fYGJrbC13N3f2drc5+fptLe7+fr6b3R9j5KZ7e7vu73CmZyiaG12ZWlzkJOa29zecHR9x8jM8PDxiIyU7OztqKux4eLkgISM0dLV7/DxYmZwbXF71NbYam547+/wztDTnKCmc3eAsbO4hoqR4OHjd3uE4+TllpmfoKOp0dPVm56k5+jpcXZ+xMbK5ebog4eOeX2F6uvs3N7gzM3QpKetsrW6d3yEhYmRwsTIfIGJ9vb3iIyTo6ase3+H3d7goaSqhYiQwMLG39poDAAAASpJREFUeNrMk1VzwzAQhLWyY4zDSYMNlJkZUmZm5v7/v1BJTj2uredM92V37j7rdPaYkDapI6siIPU94QMmIZG65/X7oVZS9K826jjxgByS4bEfmKCtaOvISC72jFgrjaKgSIA8rtygFJCXrfZSRZ8Ia9BtJRLcIULIFsYE8IZPIgV6URTAMJ7YnMCWfAEDsDlwiAF36M2U6yOJuPB5OCXuMewPcj8GNrmnzpAVwAIuhdMoNIuYM+OAfm4QS2M3OOoijXvg1j2y0glM68DuHFBtAut3gDPEirnfjTNR9lCxJ17aYWG1fk2Wu1lh+9v/vQ8uDO7mqVUWhdnFFV87+Sp51eaD5mWAhgEK/CvAQS0M1KB6+RFSfXlAWpP1l9K+88o0pEa7/lryI8AAOBcYGk96HRwAAAAASUVORK5CYII=)
     no-repeat;
   background-size: contain;
   display: inline-block;
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   margin-right: 5px;
 }
 .shopItem .arrow {
@@ -448,6 +453,7 @@ export default {
     width: 60px;
     margin-left: 20px;
     padding-left: 20px;
+    line-height: 20px;
 }
 /* .allItemv{
 
